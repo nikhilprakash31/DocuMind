@@ -1,0 +1,78 @@
+[project]
+name = "document-qa-assistant"
+version = "0.1.0"
+description = "Intelligent Document Q&A Assistant using Retrieval-Augmented Generation (RAG)"
+readme = "README.md"
+authors = [
+    { name = "nikhilpraksh", email = "nikhilpr31@gmail.com" }
+]
+requires-python = ">=3.12,<3.13"
+
+dependencies = [
+    # --- LangChain (Modern Modular Packages) ---
+    "langchain-core>=0.3",          # Core abstractions: runnables, documents, prompts
+    "langchain-community>=0.3",     # Community integrations: document loaders
+    "langchain-ollama>=0.3",        # Dedicated Ollama integration (ChatOllama, OllamaEmbeddings)
+    "langchain-chroma>=0.2",        # Dedicated Chroma vector store integration
+    "langchain-text-splitters>=0.3",# Text splitting strategies
+
+    # --- Vector Database ---
+    "chromadb>=0.5",                # Embedded vector database with HNSW index
+
+    # --- PDF Processing ---
+    "pypdf>=4.0",                   # Pure-Python PDF text extraction
+
+    # --- Web Interface ---
+    "streamlit>=1.38",              # Chat UI framework
+
+    # --- Configuration & Validation ---
+    "pydantic>=2.0",                # Data validation and schemas
+    "pydantic-settings>=2.0",       # Environment-based settings management
+
+    # --- Logging ---
+    "loguru>=0.7",                  # Structured logging
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",                  # Test framework
+    "pytest-asyncio>=0.24",         # Async test support
+    "pytest-mock>=3.14",            # Mocking utilities
+    "ruff>=0.6",                    # Linting and formatting
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+# Isolate this project from any parent uv workspace
+workspace = { members = [] }
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP"]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/core",
+    "src/ingestion",
+    "src/utils",
+    "src/storage",
+    "src/retrieval",
+    "src/generation",
+    "src/conversation",
+    "src/citations",
+    "src/service",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+    "ignore::DeprecationWarning:langchain_community.*:",
+]
